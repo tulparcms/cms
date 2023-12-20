@@ -17,6 +17,7 @@ class CmsLoader extends ServiceProvider{
         if(is_file(__DIR__.'/CmsHelper.php')){
             include_once(__DIR__.'/CmsHelper.php');
         }
+
         $this->loadAuth();
         $reposities = $this->createReposityList();
         if($reposities){
@@ -27,8 +28,10 @@ class CmsLoader extends ServiceProvider{
             }
         }
         TCMS()->setReposityList($reposities);
+        TCMS()->addAction('routing', [$this, 'main_routing'], 10);
         TCMS()->doActions('auth_register', null, null);
         TCMS()->doActions('routing', null, null);
+
         /*
         TCMS()->addFilter('deneme', 'denem_filter', 10);
         TCMS()->addFilter('deneme', [self::class, 'denem_filter'], 20);
@@ -44,15 +47,27 @@ class CmsLoader extends ServiceProvider{
      */
     public function boot(): void
     {
-        //
+        view()->addLocation(__DIR__.'/../views' );
+        $this->checkInstall();
         TCMS()->doActions('localize', null, null);
-        //$this->setLanguagePath('tulparstudyo/cms-home');
-        //$this->setLanguagePath('tulparstudyo/cms-reposity');
     }
-    public function uygula(){
-
+    private static function checkInstall(){
+        $instal_path = storage_path('tcms' );
+        if(!is_dir($instal_path)){
+            if(url()->current()!=url('install')){
+                echo '<script>window.location.href="'.url('install').'"</script>';
+            }
+        }
     }
-    public function dinle(){
+    function main_routing(){
+        \Route::get('/install', function () {
+            $installed = TCMS()->installRequiredReposity();
+            if($installed){
+                return view('install-success', []);
+            } else{
+                return view('install-failure', []);
+            }
+        });
 
     }
     private static function loadReposities(){
@@ -71,6 +86,9 @@ class CmsLoader extends ServiceProvider{
     private function createReposityList(){
         $result = [];
         $path = storage_path('tcms');
+        if(!is_dir($path)){
+            return [];
+        }
         $vendorList = scandir($path);
         if(empty($vendorList)){
             return [];

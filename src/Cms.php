@@ -4,6 +4,7 @@ namespace Tulparstudyo\Cms;
 
 class Cms
 {
+    public $requiredReposities = ['/tulparcms/cms-auth', '/tulparcms/cms-home', '/tulparcms/cms-reposity'];
     public $replace = [];
     public $filters = [];
     public $actions = [];
@@ -84,14 +85,28 @@ class Cms
         $this->dataTable['js'] = 1;
         return ' <script src="'.tcms_asset('vendor/libs/datatables-bs5/datatables-bootstrap5.js').'"></script>';
     }
+    public  function installRequiredReposity(){
+        $instal_path = storage_path('tcms' );
+        $result = 1;
+        if(!is_dir($instal_path)){
+            mkdir($instal_path, 0777, 1);
+        }
+        foreach ($this->requiredReposities as $requiredReposity){
+            $result = $result * self::downloadReposity($requiredReposity);
+        }
+        return $result;
+    }
     public static function downloadReposity($reposity){
         $url = 'https://codeload.github.com'.$reposity.'/zip/refs/heads/main';
         $client = new \GuzzleHttp\Client(['verify' => false]);
         $reposities = explode('/', $reposity);
+
         $filename = array_pop($reposities);
         $folder  = storage_path('tcms'.implode('/', $reposities));
         $file_path  = $folder.'/'.$filename.'.zip';
-
+        if(!is_dir($folder)){
+            mkdir($folder, 0777, 1);
+        }
         try {
             $response = $client->get($url, ['sink' => $file_path]);
            if(is_file($file_path)){
@@ -106,14 +121,14 @@ class Cms
                    }
                    $zip->extractTo($folder);
                    $zip->close();
-                   return true;
+                   return 1;
                }
            }
             return true;
         } catch (\Exception $e) {
 
         }
-        return false;
+        return 0;
 
     }
 
