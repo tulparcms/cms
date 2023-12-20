@@ -33,7 +33,9 @@ class Cms
             foreach($this->filters as $filters){
                 foreach($filters as $events){
                     foreach($events as $event){
-                        $content = $event->filter($content, $data);
+                        if($eventName == $event->filterName){
+                            $content = $event->filter($content, $data);
+                        }
                     }
                 }
             }

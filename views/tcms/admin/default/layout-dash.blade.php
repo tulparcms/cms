@@ -135,10 +135,10 @@
                         ?>
                     @if($admin_menu)
                     <ul class="menu-sub">
-                        @foreach($system_menu as $menuItem)
-                        <li class="menu-item active">
-                            <a href="layouts-container.html" class="menu-link">
-                                <div data-i18n="Container">Container</div>
+                        @foreach($admin_menu as $menuItem)
+                        <li id="{{ $menuItem->id }}" class="menu-item active">
+                            <a href="{{ $menuItem->url }}" class="menu-link {{ $menuItem->class }}">
+                                <div data-i18n="{{ $menuItem->title }}">{{ $menuItem->title }}</div>
                             </a>
                         </li>
                         @endforeach
