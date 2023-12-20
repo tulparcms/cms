@@ -1,0 +1,36 @@
+{
+    "name": "tulparcms/cms",
+    "description": "Tulpar Studyo CMS.",
+    "type": "library",
+    "keywords": [
+        "tulparstudyo",
+        "cms",
+        "laravel"
+    ],
+    "homepage": "https://github.com/tulparcms/cms",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ahmet Hamdi",
+            "homepage": "http://www.tulparcms.com/"
+        }
+    ],
+    "require": {
+        "php": ">=7.0.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~6.0 || ~7.0 || ~9.0"
+    },
+    "suggest": {
+        "ext-intl": "Tulpar Studyo CMS support"
+    },
+    "autoload": {
+        "psr-4": {
+            "Tulparstudyo\\Cms\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+        }
+    }
+}
